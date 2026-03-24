@@ -5,7 +5,7 @@ Passive recon tool for pentest initial sweeps via Shodan. Zero active traffic to
 ## Install
 
 ```bash
-pip install .
+pip install -r requirements.txt
 ```
 
 ## API Key
@@ -14,8 +14,6 @@ Set your Shodan API key via any of these:
 
 ```bash
 export SHODAN_API_KEY=your_key
-# or
-mkdir -p ~/.rshade && echo "api_key=your_key" > ~/.rshade/config
 # or
 rshade -t ... --api-key your_key
 ```
@@ -58,6 +56,5 @@ JSON output can be used as input for `--diff` on subsequent scans.
 
 ## Notes
 
-- Shodan data may be weeks/months old — treat as intel, not ground truth
 - Works best with Shodan Member+ (required for vuln data)
 - `/30` and `/29` ranges work well; large `/16` ranges will burn API credits fast
