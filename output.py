@@ -189,3 +189,39 @@ def save_json(hosts: list, output_path: str):
     with open(output_path, "w") as f:
         json.dump(hosts, f, indent=2)
     print(f"  {G}[✓]{RST} JSON saved → {output_path}")
+
+
+def print_top_vulns(hosts: list, n: int):
+    from collections import defaultdict
+ 
+    # Aggregate CVEs across all hosts
+    cve_map = defaultdict(lambda: {"count": 0, "cvss": 0.0, "summary": ""})
+ 
+    for host in hosts:
+        for v in host["vulns"]:
+            cve_id = v["id"]
+            cve_map[cve_id]["count"] += 1
+            cve_map[cve_id]["cvss"] = max(cve_map[cve_id]["cvss"], v["cvss"])
+            if not cve_map[cve_id]["summary"]:
+                cve_map[cve_id]["summary"] = v["summary"]
+ 
+    if not cve_map:
+        print(f"\n  {DIM}No CVEs found across scanned hosts.{RST}")
+        return
+ 
+    # Sort by count desc, then CVSS desc
+    ranked = sorted(cve_map.items(), key=lambda x: (x[1]["count"], x[1]["cvss"]), reverse=True)[:n]
+ 
+    print(f"\n{BOLD}  Top {n} Vulnerabilities{RST}")
+    print(SEP)
+    print(f"  {'CVE':<20} {'Hosts':>6}  {'CVSS':>6}  {'Severity':<10} Summary")
+    print(f"  {DIM}{'─'*20} {'─'*6}  {'─'*6}  {'─'*10} {'─'*40}{RST}")
+ 
+    for cve_id, data in ranked:
+        cc = cvss_color(data["cvss"])
+        label = severity_label(data["cvss"])
+        summary = data["summary"][:50] + "..." if len(data["summary"]) > 50 else data["summary"]
+        hosts_str = f"{data['count']} host{'s' if data['count'] != 1 else ''}"
+        print(f"  {cc}{cve_id:<20}{RST} {Y}{hosts_str:>6}{RST}  {cc}{data['cvss']:>6}{RST}  {cc}{label:<10}{RST} {DIM}{summary}{RST}")
+ 
+    print()

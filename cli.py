@@ -51,6 +51,13 @@ def main():
         help="Print summary totals only, no per-host detail"
     )
     parser.add_argument(
+    "--top-vulns",
+    type=int,
+    default=0,
+    metavar="N",
+    help="Print top N CVEs by occurrence across all hosts (e.g. --top-vulns 10)"
+    )
+    parser.add_argument(
         "--api-key",
         help="Shodan API key (overrides config file / env var)"
     )
@@ -76,6 +83,7 @@ def main():
         flag_defaults=args.flag_defaults,
         diff_file=args.diff,
         summary_only=args.summary,
+        top_vulns=args.top_vulns,
         config=config,
     )
 

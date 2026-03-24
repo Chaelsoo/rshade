@@ -9,7 +9,7 @@ from shodan_client import ShodanClient
 from enrichment import parse_host, diff_results
 from output import (
     print_header, print_host, print_summary,
-    print_diff, save_markdown, save_json
+    print_diff, print_top_vulns, save_markdown, save_json
 )
 
 
@@ -47,6 +47,7 @@ def run_scan(
     flag_defaults: bool,
     diff_file: Optional[str],
     summary_only: bool,
+    top_vulns: int,
     config: Config,
 ):
     ips = resolve_targets(target)
@@ -82,6 +83,9 @@ def run_scan(
     hosts.sort(key=lambda h: h["max_cvss"], reverse=True)
 
     print_summary(hosts, not_found)
+
+    if top_vulns > 0:
+        print_top_vulns(hosts, top_vulns)
 
     # Diff
     if diff_file:
