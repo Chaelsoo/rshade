@@ -1,0 +1,21 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# API key config
+~/.rshade/
+config
+
+# scan outputs
+*.json
+scan*.json
+report*.md
+output*.md
+
+# venv if you ever add one
+venv/
+.env
